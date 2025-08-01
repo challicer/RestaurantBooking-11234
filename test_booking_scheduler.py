@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 
 import pytest
 
@@ -40,20 +40,28 @@ def test_시간대별_인원제한이_있다_같은_시간대에_Capacity_초과
         booking_scheduler.add_schedule(new_schedule)
 
 
-def test_시간대별_인원제한이_있다_같은_시간대가_다르면_Capacity_차있어도_스케쥴_추가_성공():
+def test_시간대별_인원제한이_있다_같은_시간대가_다르면_Capacity_차있어도_스케쥴_추가_성공(booking_scheduler):
+    schedule = Schedule(ON_THE_HOUR, CAPACITY_PER_HOUR, CUSTOMER)
+    booking_scheduler.add_schedule(schedule)
+
+    different_hour = ON_THE_HOUR + timedelta(hours=1)
+    new_schedule = Schedule(different_hour, UNDER_CAPACITY, CUSTOMER)
+    booking_scheduler.add_schedule(new_schedule)
+
+    assert booking_scheduler.has_schedule(schedule)
+    assert booking_scheduler.has_schedule(new_schedule)
+
+def test_예약완료시_SMS는_무조건_발송(booking_scheduler):
     pass
 
-def test_예약완료시_SMS는_무조건_발송():
+def test_이메일이_없는_경우에는_이메일_미발송(booking_scheduler):
     pass
 
-def test_이메일이_없는_경우에는_이메일_미발송():
+def test_이메일이_있는_경우에는_이메일_발송(booking_scheduler):
     pass
 
-def test_이메일이_있는_경우에는_이메일_발송():
+def test_현재날짜가_일요일인_경우_예약불가_예외처리(booking_scheduler):
     pass
 
-def test_현재날짜가_일요일인_경우_예약불가_예외처리():
-    pass
-
-def test_현재날짜가_일요일이_아닌경우_예약가능():
+def test_현재날짜가_일요일이_아닌경우_예약가능(booking_scheduler):
     pass
